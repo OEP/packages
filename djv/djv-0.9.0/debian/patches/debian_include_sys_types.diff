@@ -1,0 +1,24 @@
+Index: djv-0.9.0/lib/djv_core/djv_file.h
+===================================================================
+--- djv-0.9.0.orig/lib/djv_core/djv_file.h	2014-06-19 21:26:40.752078461 -0400
++++ djv-0.9.0/lib/djv_core/djv_file.h	2014-06-19 21:27:21.624077958 -0400
+@@ -34,6 +34,7 @@
+ #ifndef DJV_FILE_H
+ #define DJV_FILE_H
+ 
++#include <sys/types.h>
+ #include <djv_debug.h>
+ #include <djv_seq.h>
+ #include <djv_set.h>
+Index: djv-0.9.0/lib/djv_core/djv_user.h
+===================================================================
+--- djv-0.9.0.orig/lib/djv_core/djv_user.h	2014-06-19 21:26:36.228078517 -0400
++++ djv-0.9.0/lib/djv_core/djv_user.h	2014-06-19 21:27:08.404078121 -0400
+@@ -34,6 +34,7 @@
+ #ifndef DJV_USER_H
+ #define DJV_USER_H
+ 
++#include <sys/types.h>
+ #include <djv_string.h>
+ 
+ namespace djv
