@@ -1,0 +1,13 @@
+Source: djv
+Maintainer: Paul Kilgo <paulkilgo@gmail.com>
+Section: graphics
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9)
+
+Package: djv
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Professional movie playback software
+ DJV provides playback and conversion of a variety of standard image formats
+ used in the entertainment industry.
