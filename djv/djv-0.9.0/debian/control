@@ -3,7 +3,8 @@ Maintainer: Paul Kilgo <paulkilgo@gmail.com>
 Section: graphics
 Priority: optional
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9), libfltk1.3-dev, libxft-dev, libxinerama-dev,
+ libxpm-dev, libglew-dev
 
 Package: djv
 Architecture: any
