@@ -4,11 +4,14 @@ Section: net
 Priority: extra
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 9)
+Provides: openssh-server, openssh-client
+Conflicts: openssh-server, openssh-client
+Replaces: openssh-server, openssh-client
 
 Package: openssh-akcenv
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Fork of OpenSSH which allows many-key-single-user setups
+Description:Fork of OpenSSH which allows many-key-single-user setups
   This fork of OpenSSH extends the AuthorizedKeysCommand directive to include
   the key contents and fingerprint in the environment for the configured
   command. This allows system administrators further control in identifying a
