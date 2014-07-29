@@ -1,0 +1,3 @@
+#!/bin/sh
+set -eu
+update-rc.d ssh remove >/dev/null || true
