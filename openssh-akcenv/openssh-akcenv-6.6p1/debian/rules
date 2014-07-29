@@ -2,3 +2,8 @@
 
 %:
 	dh $@
+
+override_dh_installinit:
+	dh_installinit -n --name ssh
+	install -D -o root -g root debian/openssh-akcenv.ssh.init debian/openssh-akcenv/etc/init.d/ssh
+	install -D -o root -g root -m 644 debian/openssh-akcenv.ssh.default debian/openssh-akcenv/etc/default/ssh
