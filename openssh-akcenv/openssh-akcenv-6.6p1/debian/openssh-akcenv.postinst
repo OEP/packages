@@ -1,3 +1,82 @@
 #!/bin/sh
 set -eu
+
+action="$1"
+oldversion="$2"
+
+if [ "$action" != configure ]
+  then
+  exit 0
+fi
+
+get_config_option() {
+  option="$1"
+
+  [ -f /etc/sshd_config ] || return
+
+  # TODO: actually only one '=' allowed after option
+  perl -lne 's/\s+/ /g; print if s/^\s*'"$option"'[[:space:]=]+//i' \
+     /etc/sshd_config
+}
+
+host_keys_required() {
+  hostkeys="$(get_config_option HostKey)"
+  if [ "$hostkeys" ]; then
+    echo "$hostkeys"
+  else
+    # No HostKey directives at all, so the server picks some
+    # defaults depending on the setting of Protocol.
+    protocol="$(get_config_option Protocol)"
+    [ "$protocol" ] || protocol=1,2
+    if echo "$protocol" | grep 1 >/dev/null; then
+      echo /etc/ssh/ssh_host_key
+    fi
+    if echo "$protocol" | grep 2 >/dev/null; then
+      echo /etc/ssh/ssh_host_rsa_key
+      echo /etc/ssh/ssh_host_dsa_key
+      echo /etc/ssh/ssh_host_ecdsa_key
+    fi
+  fi
+}
+
+create_key() {
+  msg="$1"
+  shift
+  hostkeys="$1"
+  shift
+  file="$1"
+  shift
+
+  if echo "$hostkeys" | grep -x "$file" >/dev/null && \
+     [ ! -f "$file" ] ; then
+    echo -n $msg
+    ssh-keygen -q -f "$file" -N '' "$@"
+    echo
+    if which restorecon >/dev/null 2>&1; then
+      restorecon "$file.pub"
+    fi
+  fi
+}
+
+create_keys() {
+  hostkeys="$(host_keys_required)"
+  create_key "Creating SSH1 key; this may take some time ..." \
+    "$hostkeys" /etc/ssh_host_key -t rsa1
+  create_key "Creating SSH2 RSA key; this may take some time ..." \
+    "$hostkeys" /etc/ssh_host_rsa_key -t rsa
+  create_key "Creating SSH2 DSA key; this may take some time ..." \
+    "$hostkeys" /etc/ssh_host_dsa_key -t dsa
+  create_key "Creating SSH2 ECDSA key; this may take some time ..." \
+    "$hostkeys" /etc/ssh_host_ecdsa_key -t ecdsa
+}
+
+# Create host keys specified by sshd_config
+create_keys
+
+# Add the privilege separation user 'sshd' if it doesn't exist
+if ! getent passwd sshd >/dev/null; then
+  adduser --quiet --system --no-create-home --home /var/run/sshd --shell /usr/sbin/nologin sshd
+fi
+
+# Link in ssh init script to /etc/rc.d
 update-rc.d ssh defaults >/dev/null || true
