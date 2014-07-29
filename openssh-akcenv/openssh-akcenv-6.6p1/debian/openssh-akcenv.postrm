@@ -1,3 +1,12 @@
 #!/bin/sh
 set -eu
-update-rc.d ssh remove >/dev/null || true
+
+case $1 in
+  purge)
+    update-rc.d ssh remove >/dev/null || true
+
+    if which deluser >/dev/null 2>&1; then
+      deluser --quiet sshd > /dev/null || true
+    fi
+    ;;
+esac
